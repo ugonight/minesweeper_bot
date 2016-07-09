@@ -44,7 +44,7 @@ init_board = ->
     
     return
 
-digitStr = ['０','１','２','３','４','５','６','７','８','９']
+digitStr = ['１','２','３','４','５','６','７','８','９']
 
 #   盤面表示
 print_board = ->
@@ -99,4 +99,19 @@ module.exports = (robot) ->
         play = true
         init_board()
         msg.send print_board()
-    
+        msg.send "where will you open ? [a-i][1-9]"
+
+    alphaStr = ['a','b','c','d','e','f','g','h','i']
+
+    robot.respond /([a-i][1-9])/i, (msg) ->
+        if play
+            buffer = msg.match[1]
+            x = 0
+            y = 0
+            for i in [0..8]
+                if buffer[0] is alphaStr[i]
+                    x = i + 1
+                    break
+            y = parseInt(buffer[1],10)
+            open(x, y)
+            msg.send print_board()
