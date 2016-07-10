@@ -26,8 +26,8 @@ init_board = ->
     #   爆弾を配置
     for i in [0...N_MINE]
         loop
-            x = Math.random() % BD_WD + 1   #   [1, BD_WD]
-            y = Math.random() % BD_HT + 1   #   [1, BD_HT]
+            x = Math.floor(Math.random() * BD_WD) + 1   #   [1, BD_WD]
+            y = Math.floor(Math.random() * BD_HT) + 1   #   [1, BD_HT]
             break unless mine[x * (BD_WD+2) + y] is true #   既に爆弾が置いてある
         mine[x * (BD_WD+2) + y] = true
         #   8近傍の爆弾数をインクリメント
@@ -40,7 +40,6 @@ init_board = ->
         nMine[x * (BD_WD+2) + y+1] += 1
         nMine[(x+1) * (BD_WD+2) + y+1] += 1
 
-        i++
     
     return
 
@@ -57,7 +56,7 @@ print_board = ->
                 message += "■"
             else if mine[x * (BD_WD+2) + y] is true  #   地雷有り
                 message += "★"
-            else if nMine[x * (BD_WD+2) + y] is false    #   周りに地雷無し
+            else if nMine[x * (BD_WD+2) + y] is 0    #   周りに地雷無し
                 message += "・"
             else                    #   周りに地雷有り
                 message += " " + nMine[x * (BD_WD+2) + y]
@@ -87,7 +86,7 @@ open = (x, y) ->
 checkSweeped = ->
     for x in [1..BD_WD]
         for y in [1..BD_HT]
-            if (mine[x * (BD_WD+2) + y] is false) and (open[x * (BD_WD+2) + y])
+            if (mine[x * (BD_WD+2) + y] is false) and (open[x * (BD_WD+2) + y] is false)
                 false
                 return
 
@@ -115,3 +114,10 @@ module.exports = (robot) ->
             y = parseInt(buffer[1],10)
             open(x, y)
             msg.send print_board()
+
+            if checkSweeped()
+                msg.send "Good-Job !!!  you've sweeped all Mines in success.\n"
+                play = false
+            else if mine[x * (BD_WD+2) + y]
+                msg.send "Oops !!! You've stepped on a Mine...\n\n"
+                play = false
