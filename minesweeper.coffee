@@ -48,7 +48,7 @@ digitStr = ['１','２','３','４','５','６','７','８','９']
 #   盤面表示
 print_board = ->
     message = ""
-    message += "\n　ａｂｃｄｅｆｇｈｉ\n"
+    message += "\n□ａｂｃｄｅｆｇｈｉ\n"
     for y in [1..BD_HT]
         message += digitStr[y-1]
         for x in [1..BD_WD]
